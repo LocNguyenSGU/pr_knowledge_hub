@@ -4,11 +4,29 @@
 
 # Create test user for authentication
 if Rails.env.development?
-  user = User.find_or_create_by!(email: 'admin@example.com') do |u|
-    u.password = 'password123'
-    u.password_confirmation = 'password123'
+  # Admin user
+  admin = User.find_or_initialize_by(email: 'admin@example.com')
+  if admin.new_record?
+    admin.password = 'password123'
+    admin.password_confirmation = 'password123'
+    admin.save!
+    puts "✓ Created admin user: #{admin.email} (password: password123)"
+  else
+    puts "✓ Admin user already exists: #{admin.email}"
   end
-  puts "Created test user: #{user.email} (password: password123)"
+
+  # Create additional test users
+  5.times do |i|
+    email = "user#{i + 1}@example.com"
+    user = User.find_or_initialize_by(email: email)
+    if user.new_record?
+      user.password = 'password123'
+      user.password_confirmation = 'password123'
+      user.save!
+    end
+  end
+  
+  puts "✓ Created #{User.count} users total"
 end
 
 # Create predefined tags for comment classification
