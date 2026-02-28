@@ -19,5 +19,10 @@ class AnalyzeCommentsJob < ApplicationJob
     results = classifier.classify_batch(unanalyzed_comments)
 
     Rails.logger.info "Analysis complete: #{results[:success]} successful, #{results[:failed]} failed, #{results[:skipped]} skipped"
+  rescue StandardError => e
+    Rails.logger.error "AnalyzeCommentsJob failed: #{e.class} - #{e.message}"
+    Rails.logger.error e.backtrace.join("\n")
+    # Re-raise to allow Sidekiq retry mechanism
+    raise e
   end
 end

@@ -33,12 +33,35 @@ class Sync::BaseController < ApplicationController
   end
 
   def analyze
+    # Check if there are unanalyzed comments
+    unanalyzed_count = Comment.unanalyzed.count
+    
+    if unanalyzed_count.zero?
+      return render json: {
+        status: "empty",
+        message: "No unanalyzed comments found. Please sync pull requests first."
+      }, status: :unprocessable_entity
+    end
+
+    # Check if tags are initialized
+    unless Tag.exists?
+      return render json: {
+        status: "error",
+        message: "Tags not initialized. Run 'bin/rails db:seed' first."
+      }, status: :unprocessable_entity
+    end
+
+    # Queue comment analysis job
     AnalyzeCommentsJob.perform_later
+    
+    # Queue insight generation job (wait 2 minutes for analysis to complete)
+    GenerateInsightsJob.set(wait: 2.minutes).perform_later
 
     render json: {
       status: "queued",
-      message: "Comment analysis job has been queued",
-      job: "AnalyzeCommentsJob"
+      message: "Comment analysis and insight generation queued. This may take 2-3 minutes.",
+      jobs: ["AnalyzeCommentsJob", "GenerateInsightsJob"],
+      comments_count: unanalyzed_count
     }
   end
 
