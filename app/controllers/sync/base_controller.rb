@@ -35,7 +35,7 @@ class Sync::BaseController < ApplicationController
   def analyze
     # Check if there are unanalyzed comments
     unanalyzed_count = Comment.unanalyzed.count
-    
+
     if unanalyzed_count.zero?
       return render json: {
         status: "empty",
@@ -53,14 +53,14 @@ class Sync::BaseController < ApplicationController
 
     # Queue comment analysis job
     AnalyzeCommentsJob.perform_later
-    
+
     # Queue insight generation job (wait 2 minutes for analysis to complete)
     GenerateInsightsJob.set(wait: 2.minutes).perform_later
 
     render json: {
       status: "queued",
       message: "Comment analysis and insight generation queued. This may take 2-3 minutes.",
-      jobs: ["AnalyzeCommentsJob", "GenerateInsightsJob"],
+      jobs: [ "AnalyzeCommentsJob", "GenerateInsightsJob" ],
       comments_count: unanalyzed_count
     }
   end
