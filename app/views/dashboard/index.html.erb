@@ -1,0 +1,190 @@
+<div class="mb-8">
+  <h1 class="text-3xl font-bold text-gray-900 mb-2">Dashboard</h1>
+  <p class="text-gray-600">Overview of your PR knowledge hub</p>
+</div>
+
+<!-- Stats Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+  <div class="bg-white rounded-lg shadow p-6">
+    <div class="flex items-center justify-between mb-2">
+      <h3 class="text-sm font-medium text-gray-600">Total PRs</h3>
+      <svg class="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+      </svg>
+    </div>
+    <p class="text-3xl font-bold text-gray-900"><%= @stats[:total_prs] %></p>
+    <p class="text-sm text-gray-500 mt-2">
+      <span class="text-green-600"><%= @stats[:open_prs] %> open</span> •
+      <span class="text-purple-600"><%= @stats[:merged_prs] %> merged</span>
+    </p>
+  </div>
+
+  <div class="bg-white rounded-lg shadow p-6">
+    <div class="flex items-center justify-between mb-2">
+      <h3 class="text-sm font-medium text-gray-600">Comments</h3>
+      <svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+      </svg>
+    </div>
+    <p class="text-3xl font-bold text-gray-900"><%= @stats[:total_comments] %></p>
+    <p class="text-sm text-gray-500 mt-2">
+      <%= @stats[:analyzed_comments] %> analyzed with AI
+    </p>
+  </div>
+
+  <div class="bg-white rounded-lg shadow p-6">
+    <div class="flex items-center justify-between mb-2">
+      <h3 class="text-sm font-medium text-gray-600">AI Insights</h3>
+      <svg class="w-8 h-8 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+      </svg>
+    </div>
+    <p class="text-3xl font-bold text-gray-900"><%= @stats[:total_insights] %></p>
+    <p class="text-sm text-gray-500 mt-2">
+      Generated from reviews
+    </p>
+  </div>
+
+  <div class="bg-white rounded-lg shadow p-6">
+    <div class="flex items-center justify-between mb-2">
+      <h3 class="text-sm font-medium text-gray-600">Avg Comments/PR</h3>
+      <svg class="w-8 h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+      </svg>
+    </div>
+    <p class="text-3xl font-bold text-gray-900"><%= @stats[:avg_comments_per_pr] %></p>
+    <p class="text-sm text-gray-500 mt-2">
+      Average engagement
+    </p>
+  </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+  <!-- Recent Pull Requests -->
+  <div class="lg:col-span-2 bg-white rounded-lg shadow" data-controller="collapsible" data-collapsible-open-value="true">
+    <div class="px-6 py-4 border-b border-gray-200">
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg font-semibold text-gray-900">Recent Pull Requests</h2>
+        <div class="flex items-center space-x-2">
+          <%= link_to "View All", pull_requests_path, class: "text-sm text-blue-600 hover:text-blue-700" %>
+          <button type="button" data-action="click->collapsible#toggle" class="text-gray-400 hover:text-gray-600">
+            <svg data-collapsible-target="icon" class="w-5 h-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div data-collapsible-target="content" class="divide-y divide-gray-200">
+      <% if @recent_prs.any? %>
+        <% @recent_prs.each do |pr| %>
+          <div class="px-6 py-4 hover:bg-gray-50 transition-colors">
+            <%= link_to pull_request_path(pr), class: "block" do %>
+              <div class="flex items-start justify-between">
+                <div class="flex-1">
+                  <div class="flex items-center space-x-2 mb-1">
+                    <span class="text-sm font-medium text-gray-900">#<%= pr.number %></span>
+                    <span class="text-gray-600">—</span>
+                    <h3 class="text-sm font-medium text-gray-900 line-clamp-1"><%= pr.title %></h3>
+                  </div>
+                  <div class="flex items-center space-x-3 text-xs text-gray-500">
+                    <span><%= pr.author_name %></span>
+                    <span>•</span>
+                    <span><%= pr.github_created_at ? "#{time_ago_in_words(pr.github_created_at)} ago" : "Unknown date" %></span>
+                    <% if pr.comments.any? %>
+                      <span>•</span>
+                      <span><%= pr.comments.count %> comments</span>
+                    <% end %>
+                  </div>
+                </div>
+                <span class="flex-shrink-0 ml-4 px-2 py-1 text-xs font-medium rounded-full <%= pr.state == "open" ? "bg-green-100 text-green-800" : pr.state == "merged" ? "bg-purple-100 text-purple-800" : "bg-gray-100 text-gray-800" %>">
+                  <%= pr.state %>
+                </span>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+      <% else %>
+        <div class="px-6 py-12 text-center text-gray-500">
+          <p>No pull requests yet.</p>
+          <p class="text-sm mt-2">Run <code class="bg-gray-100 px-2 py-1 rounded">rails github:sync</code> to fetch PRs.</p>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Right Sidebar -->
+  <div class="space-y-6">
+    <!-- Top Tags -->
+    <div class="bg-white rounded-lg shadow" data-controller="collapsible" data-collapsible-open-value="true">
+      <div class="px-6 py-4 border-b border-gray-200">
+        <div class="flex items-center justify-between">
+          <h2 class="text-lg font-semibold text-gray-900">Top Tags</h2>
+          <button type="button" data-action="click->collapsible#toggle" class="text-gray-400 hover:text-gray-600">
+            <svg data-collapsible-target="icon" class="w-5 h-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div data-collapsible-target="content" class="px-6 py-4">
+        <% if @top_tags.any? %>
+          <div class="space-y-3">
+            <% @top_tags.each do |tag| %>
+              <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                  <span class="px-2 py-1 text-xs font-medium rounded-full bg-<%= tag.name %>-100 text-<%= tag.name %>-800">
+                    <%= tag.name %>
+                  </span>
+                </div>
+                <span class="text-sm text-gray-600"><%= tag.comments_count %></span>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <div class="text-center text-gray-500 py-4">
+            <p class="text-sm">No tags yet</p>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Recent Insights -->
+    <div class="bg-white rounded-lg shadow" data-controller="collapsible" data-collapsible-open-value="true">
+      <div class="px-6 py-4 border-b border-gray-200">
+        <div class="flex items-center justify-between">
+          <h2 class="text-lg font-semibold text-gray-900">Recent Insights</h2>
+          <div class="flex items-center space-x-2">
+            <%= link_to "View All", insights_path, class: "text-sm text-blue-600 hover:text-blue-700" %>
+            <button type="button" data-action="click->collapsible#toggle" class="text-gray-400 hover:text-gray-600">
+              <svg data-collapsible-target="icon" class="w-5 h-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div data-collapsible-target="content" class="divide-y divide-gray-200">
+        <% if @recent_insights.any? %>
+          <% @recent_insights.each do |insight| %>
+            <%= link_to insight_path(insight), class: "block px-6 py-4 hover:bg-gray-50 transition-colors" do %>
+              <div class="flex items-start space-x-2">
+                <svg class="w-5 h-5 text-purple-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                </svg>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium text-gray-900 line-clamp-2"><%= insight.title %></p>
+                  <p class="text-xs text-gray-500 mt-1"><%= time_ago_in_words(insight.created_at) %> ago</p>
+                </div>
+              </div>
+            <% end %>
+          <% end %>
+        <% else %>
+          <div class="px-6 py-8 text-center text-gray-500">
+            <p class="text-sm">No insights generated yet</p>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

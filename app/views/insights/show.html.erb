@@ -1,0 +1,95 @@
+<div class="mb-8">
+  <%= link_to "← Back to Insights", insights_path, class: "text-blue-600 hover:text-blue-700 mb-4 inline-block" %>
+
+  <div class="flex items-start justify-between">
+    <div class="flex-1">
+      <div class="flex items-center space-x-3 mb-2">
+        <svg class="w-8 h-8 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+        </svg>
+        <span class="px-3 py-1 text-sm font-medium rounded-full <%=
+          case @insight.insight_type
+          when "pattern" then "bg-blue-100 text-blue-800"
+          when "lesson" then "bg-orange-100 text-orange-800"
+          when "recommendation" then "bg-green-100 text-green-800"
+          else "bg-gray-100 text-gray-800"
+          end
+                                                                %>">
+          <%= @insight.insight_type&.titleize || "Insight" %>
+        </span>
+      </div>
+      <h1 class="text-3xl font-bold text-gray-900 mb-2"><%= @insight.title %></h1>
+      <p class="text-sm text-gray-500">Generated <%= time_ago_in_words(@insight.created_at) %> ago</p>
+    </div>
+  </div>
+</div>
+
+<!-- Content -->
+<div class="bg-white rounded-lg shadow p-6 mb-6">
+  <div class="prose max-w-none">
+    <%= simple_format(@insight.content) %>
+  </div>
+
+  <% if @insight.metadata['tag'] %>
+    <div class="mt-6 pt-6 border-t border-gray-200">
+      <div class="flex items-center space-x-2">
+        <span class="text-sm text-gray-600">Related Tag:</span>
+        <span class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm font-medium">
+          <%= @insight.metadata["tag"] %>
+        </span>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<!-- Related Comments -->
+<% if @related_comments.any? %>
+  <div class="bg-white rounded-lg shadow">
+    <div class="px-6 py-4 border-b border-gray-200">
+      <h3 class="text-lg font-semibold text-gray-900">Related Comments (<%= @related_comments.size %>)</h3>
+    </div>
+    <div class="divide-y divide-gray-200">
+      <% @related_comments.each do |comment| %>
+        <div class="px-6 py-4">
+          <%= link_to pull_request_path(comment.pull_request), class: "block hover:bg-gray-50 transition-colors" do %>
+            <div class="flex items-start space-x-3">
+              <div class="flex-shrink-0">
+                <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+                  <span class="text-blue-600 font-medium text-sm"><%= comment.author_name&.first&.upcase || "?" %></span>
+                </div>
+              </div>
+
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between mb-1">
+                  <div class="flex items-center space-x-2">
+                    <span class="font-medium text-gray-900"><%= comment.author_name %></span>
+                    <span class="text-sm text-gray-500">
+                      on PR #<%= comment.pull_request.number %>
+                    </span>
+                  </div>
+                  <span class="text-sm text-gray-500">
+                    <%= comment.github_created_at ? "#{time_ago_in_words(comment.github_created_at)} ago" : "Unknown date" %>
+                  </span>
+                </div>
+
+                <div class="text-sm text-gray-700 line-clamp-3 mb-2">
+                  <%= comment.body %>
+                </div>
+
+                <% if comment.tags.any? %>
+                  <div class="flex flex-wrap gap-2">
+                    <% comment.tags.each do |tag| %>
+                      <span class="px-2 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-700">
+                        <%= tag.name %>
+                      </span>
+                    <% end %>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% end %>

@@ -1,0 +1,31 @@
+{
+  "recommendations": [
+    // Ruby
+    "shopify.ruby-lsp",
+    "misogi.ruby-rubocop",
+    "kaiwood.endwise",
+
+    // Rails
+    "hridoy.rails-snippets",
+    "bung87.rails",
+
+    // ERB
+    "aliariff.erb-helper",
+
+    // JavaScript/Stimulus
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+
+    // Git
+    "eamodio.gitlens",
+
+    // Tailwind CSS
+    "bradlc.vscode-tailwindcss",
+
+    // Markdown
+    "yzhang.markdown-all-in-one",
+
+    // YAML
+    "redhat.vscode-yaml"
+  ]
+}

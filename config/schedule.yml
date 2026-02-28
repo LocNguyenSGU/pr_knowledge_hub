@@ -1,0 +1,32 @@
+# Sidekiq-cron schedule
+# Cron format: minute hour day month day_of_week
+
+# Sync open pull requests every 15 minutes
+sync_open_pull_requests:
+  cron: "*/15 * * * *"
+  class: "SyncPullRequestsJob"
+  args: ["open"]
+  queue: default
+  description: "Sync all open pull requests from GitHub"
+
+# Sync recently closed/merged PRs every hour
+sync_recent_pull_requests:
+  cron: "0 * * * *"
+  class: "SyncPullRequestsJob"
+  args: ["closed"]
+  queue: default
+  description: "Sync recently closed pull requests from last 7 days"
+
+# Generate AI insights every Monday at 9 AM
+generate_weekly_insights:
+  cron: "0 9 * * 1"
+  class: "GenerateInsightsJob"
+  queue: low
+  description: "Generate weekly AI insights from code reviews"
+
+# Analyze unanalyzed comments every 30 minutes
+analyze_pending_comments:
+  cron: "*/30 * * * *"
+  class: "AnalyzeCommentsJob"
+  queue: default
+  description: "Analyze and tag unanalyzed comments with AI"

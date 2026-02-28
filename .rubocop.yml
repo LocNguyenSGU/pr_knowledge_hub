@@ -2,7 +2,47 @@
 inherit_gem: { rubocop-rails-omakase: rubocop.yml }
 
 # Overwrite or add rules to create your own house style
-#
-# # Use `[a, [b, c]]` not `[ a, [ b, c ] ]`
-# Layout/SpaceInsideArrayLiteralBrackets:
-#   Enabled: false
+AllCops:
+  NewCops: enable
+  Exclude:
+    - 'node_modules/**/*'
+    - 'vendor/**/*'
+    - 'tmp/**/*'
+    - 'bin/**/*'
+    - 'db/schema.rb'
+    - 'db/migrate/**/*'
+
+# Allow longer line length for view files and specs
+Layout/LineLength:
+  Max: 120
+  Exclude:
+    - 'spec/**/*'
+    - 'app/views/**/*'
+
+# Allow longer method length for specs
+Metrics/MethodLength:
+  Max: 15
+  Exclude:
+    - 'spec/**/*'
+    - 'lib/tasks/**/*'
+
+# Allow longer block length for specs and routes
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*'
+    - 'config/routes.rb'
+    - 'config/environments/*.rb'
+    - 'lib/tasks/**/*'
+
+# Allow more complexity in specs
+Metrics/AbcSize:
+  Exclude:
+    - 'spec/**/*'
+    - 'lib/tasks/**/*'
+
+# Rails-specific preferences
+Rails/I18nLazyLookup:
+  Enabled: false  # Allow I18n.t('key') instead of only t('key')
+
+Style/Documentation:
+  Enabled: false  # Don't require class documentation for now

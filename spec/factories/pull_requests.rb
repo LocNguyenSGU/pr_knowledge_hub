@@ -1,23 +1,38 @@
 FactoryBot.define do
   factory :pull_request do
-    github_id { "" }
-    number { 1 }
-    title { "MyString" }
-    body { "MyText" }
-    state { "MyString" }
-    author_name { "MyString" }
-    author_avatar { "MyString" }
-    repository_name { "MyString" }
-    repository_url { "MyString" }
-    additions { 1 }
-    deletions { 1 }
-    changed_files_count { 1 }
-    mergeable_state { "MyString" }
+    sequence(:github_id) { |n| n + 100000 }
+    sequence(:number) { |n| n }
+    title { "Add user authentication feature" }
+    body { "This PR adds user authentication with JWT tokens" }
+    state { "open" }
+    author_name { "octocat" }
+    author_avatar { "https://github.com/images/error/octocat_happy.gif" }
+    repository_name { "owner/repo" }
+    repository_url { "https://github.com/owner/repo/pull/#{number}" }
+    additions { 150 }
+    deletions { 50 }
+    changed_files_count { 5 }
+    mergeable_state { "clean" }
     draft { false }
-    github_created_at { "2026-02-28 10:00:14" }
-    github_updated_at { "2026-02-28 10:00:14" }
-    closed_at { "2026-02-28 10:00:14" }
-    merged_at { "2026-02-28 10:00:14" }
-    last_synced_at { "2026-02-28 10:00:14" }
+    github_created_at { 3.days.ago }
+    github_updated_at { 1.day.ago }
+    closed_at { nil }
+    merged_at { nil }
+    last_synced_at { Time.current }
+
+    trait :closed do
+      state { "closed" }
+      closed_at { 1.day.ago }
+    end
+
+    trait :merged do
+      state { "merged" }
+      closed_at { 1.day.ago }
+      merged_at { 1.day.ago }
+    end
+
+    trait :draft do
+      draft { true }
+    end
   end
 end

@@ -2,23 +2,32 @@
 # development, test). The code here should be idempotent so that it can be executed at any point in every environment.
 # The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
 
+# Create test user for authentication
+if Rails.env.development?
+  user = User.find_or_create_by!(email: 'admin@example.com') do |u|
+    u.password = 'password123'
+    u.password_confirmation = 'password123'
+  end
+  puts "Created test user: #{user.email} (password: password123)"
+end
+
 # Create predefined tags for comment classification
 Tag::CATEGORIES.each do |category|
   Tag.find_or_create_by!(name: category) do |tag|
     tag.category = category
     tag.description = "#{category.titleize} related comments"
     tag.color = case category
-               when 'security' then '#EF4444'
-               when 'performance' then '#F59E0B'
-               when 'code_style' then '#3B82F6'
-               when 'best_practice' then '#10B981'
-               when 'bug' then '#DC2626'
-               when 'refactoring' then '#8B5CF6'
-               when 'testing' then '#14B8A6'
-               when 'documentation' then '#6366F1'
-               when 'question' then '#6B7280'
-               else '#6B7280'
-               end
+    when "security" then "#EF4444"
+    when "performance" then "#F59E0B"
+    when "code_style" then "#3B82F6"
+    when "best_practice" then "#10B981"
+    when "bug" then "#DC2626"
+    when "refactoring" then "#8B5CF6"
+    when "testing" then "#14B8A6"
+    when "documentation" then "#6366F1"
+    when "question" then "#6B7280"
+    else "#6B7280"
+    end
   end
 end
 

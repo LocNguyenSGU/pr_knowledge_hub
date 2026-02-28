@@ -1,0 +1,86 @@
+/* Custom animations for Hotwire/Stimulus */
+
+/* Collapsible transitions */
+[data-collapsible-target="content"] {
+  transition: all 0.3s ease-in-out;
+}
+
+[data-collapsible-target="icon"] {
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Spinner animation */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Loading states */
+.loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Turbo progress bar customization */
+.turbo-progress-bar {
+  background: linear-gradient(to right, #3b82f6, #8b5cf6);
+  height: 3px;
+}
+
+/* Fade in animation for Turbo Frame content */
+turbo-frame {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Search result highlighting */
+mark {
+  background-color: #fef08a;
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+}
+
+/* Smooth transitions for filter changes */
+[data-controller="filter"] select {
+  transition: all 0.2s ease;
+}
+
+[data-controller="filter"] select:focus {
+  transform: scale(1.02);
+}
+
+/* Button loading state */
+button[disabled] {
+  cursor: not-allowed;
+}
+
+/* Status messages animation */
+[data-sync-target="status"] {
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

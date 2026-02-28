@@ -19,10 +19,12 @@ gem "tailwindcss-rails"
 
 # GitHub API client
 gem "octokit", "~> 8.0"
+gem "faraday-retry", "~> 2.2"
 
 # Background job processing
 gem "sidekiq", "~> 7.0"
 gem "sidekiq-cron", "~> 1.12"
+gem "connection_pool", "2.5.5"  # Fix for Ruby 3.4 compatibility
 
 # Full-text search
 gem "pg_search", "~> 2.3"
@@ -64,6 +66,9 @@ group :development, :test do
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
 
+  # ERB template linting [https://github.com/Shopify/erb-lint]
+  gem "erb_lint", require: false
+
   # Environment variables
   gem "dotenv-rails", "~> 2.8"
 
@@ -86,4 +91,16 @@ group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"
+
+  # Code coverage
+  gem "simplecov", "~> 0.22", require: false
+  gem "simplecov-console", require: false
+
+  # Model testing matchers
+  gem "shoulda-matchers", "~> 6.0"
+
+  # Controller testing helpers
+  gem "rails-controller-testing"
 end
+
+gem "kaminari", "~> 1.2"

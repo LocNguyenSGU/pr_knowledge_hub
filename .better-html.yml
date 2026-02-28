@@ -1,0 +1,7 @@
+---
+javascript_attribute_name: data-action
+javascript_safe_methods:
+  - j
+  - escape_javascript
+  - to_json
+lodash_safe_javascript: true

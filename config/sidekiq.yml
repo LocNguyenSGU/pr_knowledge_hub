@@ -1,0 +1,17 @@
+---
+:concurrency: 5
+:max_retries: 3
+
+# Queues (priority order)
+:queues:
+  - [critical, 3]
+  - [default, 2]
+  - [low, 1]
+
+# Production settings
+:production:
+  :concurrency: 10
+
+# Staging settings
+:staging:
+  :concurrency: 5

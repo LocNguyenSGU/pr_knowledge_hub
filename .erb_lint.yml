@@ -1,0 +1,42 @@
+---
+EnableDefaultLinters: true
+linters:
+  ErbSafety:
+    enabled: false  # Disabled due to compatibility issues with Ruby 3.4
+  Rubocop:
+    enabled: true
+    rubocop_config:
+      inherit_from:
+        - .rubocop.yml
+      Layout/InitialIndentation:
+        Enabled: false
+      Layout/TrailingEmptyLines:
+        Enabled: false
+      Layout/TrailingWhitespace:
+        Enabled: false
+  RequireInputAutocomplete:
+    enabled: true
+  NoJavascriptTagHelper:
+    enabled: true
+  PartialInstanceVariable:
+    enabled: false  # Allow instance variables in partials
+  SpaceAroundErbTag:
+    enabled: true
+  TrailingWhitespace:
+    enabled: true
+  ClosingErbTagIndent:
+    enabled: true
+  ExtraNewline:
+    enabled: true
+  FinalNewline:
+    enabled: true
+  SelfClosingTag:
+    enabled: true
+  RightTrim:
+    enabled: false  # Don't force -%> over %>
+
+exclude:
+  - "node_modules/**/*"
+  - "vendor/**/*"
+  - "tmp/**/*"
+  - "db/**/*"

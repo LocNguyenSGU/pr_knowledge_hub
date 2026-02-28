@@ -1,30 +1,30 @@
 module Github
   class PullRequestFetcher
     attr_reader :repository_name, :pr_number, :client
-    
+
     def initialize(repository_name, pr_number)
       @repository_name = repository_name
       @pr_number = pr_number
       @client = Github::Client.new
     end
-    
+
     def fetch
       pr_data = client.pull_request(repository_name, pr_number)
       return nil unless pr_data
-      
+
       upsert_pull_request(pr_data)
     end
-    
-    def fetch_all(state: 'all')
+
+    def fetch_all(state: "all")
       prs = client.pull_requests(repository_name, state: state)
-      
+
       prs.map do |pr_data|
         upsert_pull_request(pr_data)
       end.compact
     end
-    
+
     private
-    
+
     def upsert_pull_request(pr_data)
       attributes = {
         github_id: pr_data.id,
@@ -47,10 +47,10 @@ module Github
         merged_at: pr_data.merged_at,
         last_synced_at: Time.current
       }
-      
+
       pr = PullRequest.find_or_initialize_by(github_id: pr_data.id)
       pr.assign_attributes(attributes)
-      
+
       if pr.save
         Rails.logger.info("Synced PR ##{pr.number}: #{pr.title}")
         pr
@@ -59,9 +59,9 @@ module Github
         nil
       end
     end
-    
+
     def determine_state(pr_data)
-      return 'merged' if pr_data.merged_at.present?
+      return "merged" if pr_data.merged_at.present?
       pr_data.state
     end
   end

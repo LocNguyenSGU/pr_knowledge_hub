@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+# exit on error
+set -e
+
+echo "🚀 Starting CI Pipeline..."
+echo ""
+
+# Check if we're in the right directory
+if [ ! -f "Gemfile" ]; then
+  echo "❌ Error: Gemfile not found. Are you in the project root?"
+  exit 1
+fi
+
+# 1. Lint checks
+echo "📝 Running linting checks..."
+echo ""
+
+echo "  ✓ RuboCop - Ruby code style..."
+bundle exec rubocop --parallel || {
+  echo "❌ RuboCop failed. Run 'bundle exec rubocop --autocorrect-all' to fix."
+  exit 1
+}
+
+echo "  ✓ ERB Lint - ERB template style..."
+bundle exec erb_lint --lint-all || {
+  echo "❌ ERB Lint failed. Run 'bundle exec erb_lint --lint-all --autocorrect' to fix."
+  exit 1
+}
+
+echo "  ✓ Brakeman - Security analysis..."
+# Only fail on high-confidence warnings (-w3)
+bundle exec brakeman -q -w3 -z || {
+  echo "❌ Brakeman found high-confidence security issues."
+  bundle exec brakeman -w3
+  exit 1
+}
+
+echo ""
+echo "✅ All linting checks passed!"
+echo ""
+
+# 2. Database setup
+echo "🗄️  Setting up test database..."
+RAILS_ENV=test bundle exec rails db:test:prepare
+
+echo ""
+echo "✅ Test database ready!"
+echo ""
+
+# 3. Run tests with coverage
+echo "🧪 Running RSpec test suite with coverage..."
+echo ""
+
+RAILS_ENV=test bundle exec rspec --format documentation --color
+
+echo ""
+echo "📊 Checking code coverage..."
+echo ""
+
+# Check if coverage meets minimum (SimpleCov will exit with error if below threshold)
+if [ -f "coverage/.last_run.json" ]; then
+  echo "✅ Coverage report generated at coverage/index.html"
+else
+  echo "⚠️  Warning: Coverage report not found"
+fi
+
+echo ""
+echo "✅ CI Pipeline completed successfully!"
+echo ""
+echo "📊 View detailed coverage report: open coverage/index.html"
