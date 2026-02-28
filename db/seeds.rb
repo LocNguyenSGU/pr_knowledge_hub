@@ -49,7 +49,7 @@ if Rails.env.development?
       github_id: 101,
       body: "Make sure to add input validation for the email field to prevent XSS attacks.",
       author_name: "jane_reviewer",
-      author_avatar = "https://github.com/identicons/jane.png",
+      author_avatar: "https://github.com/identicons/jane.png",
       author_role: "reviewer",
       comment_type: "review_comment",
       github_created_at: 2.days.ago

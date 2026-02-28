@@ -18,7 +18,7 @@ class CreateComments < ActiveRecord::Migration[8.0]
 
       t.timestamps
     end
-    
+
     add_index :comments, :github_id, unique: true
     add_index :comments, :author_name
     add_index :comments, :ai_analyzed

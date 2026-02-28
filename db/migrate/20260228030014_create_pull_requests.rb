@@ -23,7 +23,7 @@ class CreatePullRequests < ActiveRecord::Migration[8.0]
 
       t.timestamps
     end
-    
+
     add_index :pull_requests, :github_id, unique: true
     add_index :pull_requests, :state
     add_index :pull_requests, :github_created_at

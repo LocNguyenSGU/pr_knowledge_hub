@@ -63,15 +63,15 @@ group :development, :test do
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
-  
+
   # Environment variables
   gem "dotenv-rails", "~> 2.8"
-  
+
   # Testing framework
   gem "rspec-rails", "~> 6.1"
   gem "factory_bot_rails", "~> 6.4"
   gem "faker", "~> 3.2"
-  
+
   # HTTP request mocking
   gem "vcr", "~> 6.2"
   gem "webmock", "~> 3.19"

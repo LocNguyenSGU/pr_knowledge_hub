@@ -10,7 +10,7 @@ class CreateAiInsights < ActiveRecord::Migration[8.0]
 
       t.timestamps
     end
-    
+
     add_index :ai_insights, :insight_type
     add_index :ai_insights, :created_at
   end
