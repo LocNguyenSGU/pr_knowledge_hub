@@ -109,6 +109,9 @@ GEM
       bigdecimal
       rexml
     crass (1.0.6)
+    cronex (0.15.0)
+      tzinfo
+      unicode (>= 0.4.4.5)
     date (3.5.1)
     debug (1.11.1)
       irb (~> 1.10)
@@ -450,10 +453,11 @@ GEM
       logger
       rack (>= 2.2.4)
       redis-client (>= 0.22.2)
-    sidekiq-cron (1.12.0)
-      fugit (~> 1.8)
+    sidekiq-cron (2.3.1)
+      cronex (>= 0.13.0)
+      fugit (~> 1.8, >= 1.11.1)
       globalid (>= 1.0.1)
-      sidekiq (>= 6)
+      sidekiq (>= 6.5.0)
     signet (0.21.0)
       addressable (~> 2.8)
       faraday (>= 0.17.5, < 3.a)
@@ -521,6 +525,7 @@ GEM
       ethon (>= 0.9.0, < 0.16.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
+    unicode (0.4.4.5)
     unicode-display_width (3.2.0)
       unicode-emoji (~> 4.1)
     unicode-emoji (4.2.0)
@@ -586,7 +591,7 @@ DEPENDENCIES
   selenium-webdriver
   shoulda-matchers (~> 6.0)
   sidekiq (~> 7.0)
-  sidekiq-cron (~> 1.12)
+  sidekiq-cron (~> 2.3)
   simplecov (~> 0.22)
   simplecov-console
   solid_cable
