@@ -79,13 +79,16 @@ module Github
     end
 
     def determine_author_role(comment_data)
-      if comment_data.user.login == pull_request.author_name
-        "author"
-      elsif comment_data.try(:author_association) == "OWNER"
-        "owner"
-      else
-        "reviewer"
-      end
+      # Check if it's the PR author
+      return "author" if comment_data.user.login == pull_request.author_name
+
+      # Check author association from GitHub
+      association = comment_data.try(:author_association)
+      return "owner" if association == "OWNER"
+      return association.downcase if association.present?
+
+      # Default for unknown association
+      "unknown"
     end
   end
 end

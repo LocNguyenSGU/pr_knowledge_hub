@@ -25,6 +25,10 @@ RSpec.describe SearchController, type: :controller do
     end
 
     context "with query and no scope" do
+      let(:pr) { create(:pull_request) }
+      let!(:comment1) { create(:comment, pull_request: pr, body: 'This is a great security fix') }
+      let!(:comment2) { create(:comment, pull_request: pr, body: 'Please add more tests') }
+
       before { get :index, params: { q: 'security' } }
 
       it "defaults to comments scope" do
@@ -222,6 +226,4 @@ RSpec.describe SearchController, type: :controller do
       end
     end
   end
-
-
 end

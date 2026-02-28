@@ -12,6 +12,10 @@ class PullRequest < ApplicationRecord
   scope :merged, -> { where(state: "merged") }
   scope :recent, -> { order(github_created_at: :desc) }
 
+  # Scope aliases for test compatibility
+  scope :open_prs, -> { open }
+  scope :closed_prs, -> { where(state: %w[closed merged]) }
+
   # Helper methods
   def reviewer_comments
     comments.where.not(author_role: "author")

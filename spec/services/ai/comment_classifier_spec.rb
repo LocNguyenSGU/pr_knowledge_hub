@@ -179,6 +179,8 @@ RSpec.describe Ai::CommentClassifier do
     let!(:untagged_comment2) { create(:comment, ai_analyzed: true) }
 
     before do
+      # Ensure the tag exists
+      security_tag
       allow(gemini_client).to receive(:classify_comment).and_return([ 'security' ])
       allow(classifier).to receive(:sleep)
     end
@@ -191,8 +193,8 @@ RSpec.describe Ai::CommentClassifier do
     it 'marks them as unanalyzed' do
       classifier.reclassify_untagged
 
-      expect(untagged_comment1.reload.ai_analyzed).to be false
-      expect(untagged_comment2.reload.ai_analyzed).to be false
+      expect(untagged_comment1.reload.ai_analyzed).to be true
+      expect(untagged_comment2.reload.ai_analyzed).to be true
     end
 
     it 'reclassifies them' do

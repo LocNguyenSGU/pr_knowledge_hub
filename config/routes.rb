@@ -18,10 +18,10 @@ Rails.application.routes.draw do
 
   # Sync (manual trigger)
   namespace :sync do
-    post :pull_requests
-    post :comments
-    post :analyze
-    get :status
+    post :pull_requests, controller: :base
+    post :comments, controller: :base
+    post :analyze, controller: :base
+    get :status, controller: :base
   end
 
   # Health check

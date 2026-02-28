@@ -1,13 +1,36 @@
 require 'rails_helper'
 
 RSpec.describe Ai::GeminiClient do
+  let(:gemini_mock) { double('Gemini') }
   let(:client) { described_class.new }
   let(:comment1) { create(:comment, body: "This could lead to SQL injection", ai_analyzed: true) }
   let(:comment2) { create(:comment, body: "Consider caching this query", ai_analyzed: true) }
   let(:comments) { [ comment1, comment2 ] }
 
+  # Mock streaming response structure that Gemini returns
+  let(:mock_classification_response) do
+    [
+      { "candidates" => [ { "content" => { "parts" => [ { "text" => '["security", "best_practices"]' } ] } } ] }
+    ]
+  end
+
+  let(:mock_pattern_response) do
+    [
+      { "candidates" => [ { "content" => { "parts" => [ {
+        "text" => {
+          patterns: [ "Security vulnerabilities" ],
+          lessons: [ "Always validate input" ],
+          recommendations: [ "Use parameterized queries" ]
+        }.to_json
+      } ] } } ] }
+    ]
+  end
+
   before do
     allow(ENV).to receive(:fetch).with("GEMINI_API_KEY").and_return("test-api-key")
+    allow(ENV).to receive(:fetch).with(anything, anything).and_call_original
+    allow(Gemini).to receive(:new).and_return(gemini_mock)
+    allow(gemini_mock).to receive(:stream_generate_content).and_return(mock_classification_response)
   end
 
   describe '#initialize' do
@@ -41,7 +64,7 @@ RSpec.describe Ai::GeminiClient do
 
     context 'when API call fails' do
       before do
-        allow_any_instance_of(Gemini).to receive(:stream_generate_content).and_raise(StandardError.new("API error"))
+        allow(gemini_mock).to receive(:stream_generate_content).and_raise(StandardError.new("API error"))
       end
 
       it 'returns empty array' do
@@ -63,6 +86,8 @@ RSpec.describe Ai::GeminiClient do
       performance_tag = create(:tag, name: 'performance')
       comment1.tags << security_tag
       comment2.tags << performance_tag
+      # Use pattern response for analyze_patterns
+      allow(gemini_mock).to receive(:stream_generate_content).and_return(mock_pattern_response)
     end
 
     context 'with valid comments' do
@@ -86,7 +111,7 @@ RSpec.describe Ai::GeminiClient do
 
     context 'when analysis fails' do
       before do
-        allow_any_instance_of(Gemini).to receive(:stream_generate_content).and_raise(StandardError.new("API error"))
+        allow(gemini_mock).to receive(:stream_generate_content).and_raise(StandardError.new("API error"))
       end
 
       it 'returns empty structure' do
@@ -141,27 +166,31 @@ RSpec.describe Ai::GeminiClient do
 
     describe '#parse_classification_response' do
       it 'parses valid JSON response' do
-        response_text = '["security", "performance"]'
-        allow(client).to receive(:extract_text_from_response).and_return(response_text)
+        response = [
+          { "candidates" => [ { "content" => { "parts" => [ { "text" => '["security", "performance"]' } ] } } ] }
+        ]
 
-        result = client.send(:parse_classification_response, {})
+        result = client.send(:parse_classification_response, response)
 
         expect(result).to eq([ "security", "performance" ])
       end
 
       it 'handles empty response' do
-        allow(client).to receive(:extract_text_from_response).and_return("")
+        response = [
+          { "candidates" => [ { "content" => { "parts" => [ { "text" => '[]' } ] } } ] }
+        ]
 
-        result = client.send(:parse_classification_response, {})
+        result = client.send(:parse_classification_response, response)
 
         expect(result).to eq([])
       end
 
       it 'filters invalid categories' do
-        response_text = '["security", "invalid_category", "performance"]'
-        allow(client).to receive(:extract_text_from_response).and_return(response_text)
+        response = [
+          { "candidates" => [ { "content" => { "parts" => [ { "text" => '["security", "invalid_category", "performance"]' } ] } } ] }
+        ]
 
-        result = client.send(:parse_classification_response, {})
+        result = client.send(:parse_classification_response, response)
 
         expect(result).to include("security", "performance")
         expect(result).not_to include("invalid_category")
@@ -176,9 +205,11 @@ RSpec.describe Ai::GeminiClient do
           recommendations: [ "Rec 1" ]
         }.to_json
 
-        allow(client).to receive(:extract_text_from_response).and_return(response_json)
+        response = [
+          { "candidates" => [ { "content" => { "parts" => [ { "text" => response_json } ] } } ] }
+        ]
 
-        result = client.send(:parse_pattern_response, {})
+        result = client.send(:parse_pattern_response, response)
 
         expect(result[:patterns]).to eq([ "Pattern 1" ])
         expect(result[:lessons]).to eq([ "Lesson 1" ])
@@ -186,30 +217,13 @@ RSpec.describe Ai::GeminiClient do
       end
 
       it 'returns empty structure on parse error' do
-        allow(client).to receive(:extract_text_from_response).and_return("invalid json")
-
-        result = client.send(:parse_pattern_response, {})
-
-        expect(result).to eq({ patterns: [], lessons: [], recommendations: [] })
-      end
-    end
-
-    describe '#extract_text_from_response' do
-      it 'extracts text from streaming response' do
         response = [
-          { "candidates" => [ { "content" => { "parts" => [ { "text" => "part1" } ] } } ] },
-          { "candidates" => [ { "content" => { "parts" => [ { "text" => "part2" } ] } } ] }
+          { "candidates" => [ { "content" => { "parts" => [ { "text" => "invalid json" } ] } } ] }
         ]
 
-        result = client.send(:extract_text_from_response, response)
+        result = client.send(:parse_pattern_response, response)
 
-        expect(result).to eq("part1part2")
-      end
-
-      it 'handles empty response' do
-        result = client.send(:extract_text_from_response, [])
-
-        expect(result).to eq("")
+        expect(result).to eq({ patterns: [], lessons: [], recommendations: [] })
       end
     end
   end

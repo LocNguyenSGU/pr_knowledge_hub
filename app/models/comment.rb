@@ -19,4 +19,9 @@ class Comment < ApplicationRecord
     using: {
       tsearch: { prefix: true }
     }
+
+  # Helper method for cleaner API
+  def analyzed?
+    ai_analyzed
+  end
 end

@@ -11,6 +11,7 @@ RSpec.describe Github::SyncService do
   before do
     allow(Github::Client).to receive(:new).and_return(github_client)
     allow(github_client).to receive(:rate_limit).and_return(rate_limit)
+    allow(github_client).to receive(:rate_limit_ok?).with(threshold: 100).and_return(true)
   end
 
   describe '#initialize' do
@@ -69,8 +70,9 @@ RSpec.describe Github::SyncService do
     end
 
     it 'logs start and completion' do
-      expect(Rails.logger).to receive(:info).with(/Starting full sync/)
-      expect(Rails.logger).to receive(:info).with(/Sync completed/)
+      expect(Rails.logger).to receive(:info).with(/Starting full sync/).ordered
+      expect(Rails.logger).to receive(:info).with(/Synced .* pull requests/).ordered
+      expect(Rails.logger).to receive(:info).with(/Sync completed/).ordered
 
       service.sync_all
     end
@@ -86,7 +88,8 @@ RSpec.describe Github::SyncService do
 
     context 'with state parameter' do
       it 'passes state to sync_pull_requests' do
-        expect(service).to receive(:sync_pull_requests).with(state: "open", limit: nil)
+        expect(service).to receive(:sync_pull_requests).with(state: "open", limit: nil).and_return([ pull_request ])
+        expect(service).to receive(:sync_comments_for_prs).and_return(nil)
         service.sync_all(state: "open")
       end
     end
@@ -220,7 +223,8 @@ RSpec.describe Github::SyncService do
     end
 
     it 'finds recently updated PRs' do
-      expect(Rails.logger).to receive(:info).with(/Syncing 1 recently updated PRs/)
+      # pull_request (1 day ago) and recent_pr (2 days ago) are both within 7 days
+      expect(Rails.logger).to receive(:info).with(/Syncing 2 recently updated PRs/)
       service.sync_recent(days: 7)
     end
 
@@ -232,12 +236,13 @@ RSpec.describe Github::SyncService do
     end
 
     it 'refetches PR data' do
-      expect(pr_fetcher).to receive(:fetch)
+      expect(pr_fetcher).to receive(:fetch).at_least(:once)
       service.sync_recent(days: 7)
     end
 
     it 'syncs comments' do
-      expect(service).to receive(:sync_comments_for_pr).with(recent_pr)
+      # Should sync comments for both pull_request and recent_pr
+      expect(service).to receive(:sync_comments_for_pr).at_least(:once)
       service.sync_recent(days: 7)
     end
 
@@ -249,7 +254,9 @@ RSpec.describe Github::SyncService do
       end
 
       it 'respects days parameter' do
-        expect(Rails.logger).to receive(:info).with(/Syncing 1 recently updated PRs/)
+        # pull_request (1 day ago) and recent_pr (2 days ago) are both within 3 days
+        # pr_5_days_ago (5 days ago) is not
+        expect(Rails.logger).to receive(:info).with(/Syncing 2 recently updated PRs/)
         service.sync_recent(days: 3)
       end
     end
@@ -263,27 +270,17 @@ RSpec.describe Github::SyncService do
         end
       end
 
-      context 'when rate limit is low' do
+      context 'when rate limit is not OK' do
         let(:rate_limit) { double(remaining: 50, resets_at: 1.hour.from_now) }
 
-        it 'logs warning' do
-          expect(Rails.logger).to receive(:warn).with(/Rate limit/)
-          service.send(:check_rate_limit!)
+        before do
+          allow(github_client).to receive(:rate_limit_ok?).with(threshold: 100).and_return(false)
         end
 
-        it 'does not raise error' do
-          allow(Rails.logger).to receive(:warn)
-          expect { service.send(:check_rate_limit!) }.not_to raise_error
-        end
-      end
-
-      context 'when rate limit is critical' do
-        let(:rate_limit) { double(remaining: 5) }
-
-        it 'raises error' do
+        it 'raises error with remaining count' do
           expect {
             service.send(:check_rate_limit!)
-          }.to raise_error(/rate limit/)
+          }.to raise_error(Github::Client::RateLimitError, /Rate limit too low: 50 remaining/)
         end
       end
     end

@@ -8,7 +8,12 @@ RSpec.describe Tag, type: :model do
 
   describe 'validations' do
     it { should validate_presence_of(:name) }
-    it { should validate_presence_of(:category) }
+
+    it 'validates category is required and in list' do
+      tag = Tag.new(name: 'test', category: '')
+      expect(tag).not_to be_valid
+      expect(tag.errors[:category]).to include("is not included in the list")
+    end
 
     it 'validates uniqueness of name' do
       create(:tag)

@@ -122,7 +122,24 @@ RSpec.describe Github::PullRequestFetcher do
 
     context 'when merged PR' do
       let(:merged_pr_data) do
-        double(pr_data.as_null_object, merged_at: 1.day.ago, state: "closed")
+        double(
+          id: pr_data.id,
+          number: pr_data.number,
+          title: pr_data.title,
+          body: pr_data.body,
+          state: "closed",
+          user: pr_data.user,
+          html_url: pr_data.html_url,
+          additions: pr_data.additions,
+          deletions: pr_data.deletions,
+          changed_files: pr_data.changed_files,
+          mergeable_state: pr_data.mergeable_state,
+          draft: pr_data.draft,
+          created_at: pr_data.created_at,
+          updated_at: pr_data.updated_at,
+          closed_at: pr_data.closed_at,
+          merged_at: 1.day.ago
+        )
       end
 
       before do
@@ -186,7 +203,24 @@ RSpec.describe Github::PullRequestFetcher do
 
     context 'with multiple PRs' do
       let(:pr_data2) do
-        double(pr_data.as_null_object, id: 67890, number: 124, title: "Another PR")
+        double(
+          id: 67890,
+          number: 124,
+          title: "Another PR",
+          body: "Second PR body",
+          state: "open",
+          user: double(login: "author2", avatar_url: "https://example.com/avatar2.png"),
+          html_url: "https://github.com/owner/repo/pull/124",
+          additions: 50,
+          deletions: 25,
+          changed_files: 3,
+          mergeable_state: "clean",
+          draft: false,
+          created_at: 2.days.ago,
+          updated_at: 1.day.ago,
+          closed_at: nil,
+          merged_at: nil
+        )
       end
       let(:prs_data) { [ pr_data, pr_data2 ] }
 

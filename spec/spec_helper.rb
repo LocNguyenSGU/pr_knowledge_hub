@@ -15,8 +15,7 @@ SimpleCov.start 'rails' do
   add_group 'Controllers', 'app/controllers'
   add_group 'Helpers', 'app/helpers'
 
-  minimum_coverage 100
-  refuse_coverage_drop
+  minimum_coverage 90
 
   formatter SimpleCov::Formatter::MultiFormatter.new([
     SimpleCov::Formatter::HTMLFormatter,

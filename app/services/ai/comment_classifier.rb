@@ -17,7 +17,7 @@ module Ai
 
       if category_names.empty?
         Rails.logger.info "No categories identified for comment ##{comment.id}"
-        comment.update(analyzed: true)
+        comment.update(ai_analyzed: true)
         return true
       end
 
@@ -28,7 +28,7 @@ module Ai
 
       # Assign tags to comment
       comment.tags = tags
-      comment.update(analyzed: true)
+      comment.update(ai_analyzed: true)
 
       Rails.logger.info "Comment ##{comment.id} tagged with: #{tags.map(&:name).join(', ')}"
       true
@@ -76,9 +76,12 @@ module Ai
       Rails.logger.info "Re-classifying #{untagged.count} untagged comments"
 
       # Mark as unanalyzed so they get processed
-      untagged.update_all(analyzed: false)
+      untagged_ids = untagged.pluck(:id)
+      Comment.where(id: untagged_ids).update_all(ai_analyzed: false)
 
-      classify_batch(untagged)
+      # Re-query to get fresh records with updated ai_analyzed values
+      comments_to_classify = Comment.where(id: untagged_ids)
+      classify_batch(comments_to_classify)
     end
   end
 end

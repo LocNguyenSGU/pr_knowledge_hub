@@ -2,6 +2,7 @@ class AiInsight < ApplicationRecord
   # Validations
   validates :title, presence: true
   validates :content, presence: true
+  validates :insight_type, presence: true, inclusion: { in: %w[pattern lesson recommendation] }
 
   # Scopes
   scope :patterns, -> { where(insight_type: "pattern") }

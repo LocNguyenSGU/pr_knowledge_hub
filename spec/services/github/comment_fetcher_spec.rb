@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Github::CommentFetcher do
   let(:repository_name) { "owner/repo" }
   let(:pr_number) { 123 }
-  let!(:pull_request) { create(:pull_request, number: pr_number) }
+  let(:pull_request) { create(:pull_request, number: pr_number) }
   let(:fetcher) { described_class.new(repository_name, pr_number) }
   let(:github_client) { instance_double(Github::Client) }
 
@@ -46,6 +46,7 @@ RSpec.describe Github::CommentFetcher do
   end
 
   before do
+    pull_request # Force creation for tests that need it
     allow(Github::Client).to receive(:new).and_return(github_client)
     allow(github_client).to receive(:issue_comments).and_return([ comment_data ])
     allow(github_client).to receive(:review_comments).and_return([ review_comment_data ])
@@ -99,6 +100,11 @@ RSpec.describe Github::CommentFetcher do
 
     context 'when PR not found in database' do
       let(:pr_number) { 999 }
+
+      before do
+        # Don't create PR for this context
+        allow(PullRequest).to receive(:find_by).with(number: 999).and_return(nil)
+      end
 
       it 'returns empty array' do
         result = fetcher.fetch
@@ -212,7 +218,8 @@ RSpec.describe Github::CommentFetcher do
       end
 
       it 'logs debug message' do
-        expect(Rails.logger).to receive(:debug).with(/Synced comment/)
+        allow(Rails.logger).to receive(:debug).and_call_original
+        expect(Rails.logger).to receive(:debug).with(/Synced comment/).at_least(:once).and_call_original
         fetcher.send(:upsert_comments, comments_data, "issue_comment")
       end
 

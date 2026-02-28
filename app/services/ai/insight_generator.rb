@@ -11,7 +11,7 @@ module Ai
     # @return [AiInsight] Created insight record
     def generate_weekly_insights(days: 7)
       start_date = days.days.ago
-      comments = Comment.where("created_at >= ?", start_date)
+      comments = Comment.where("comments.created_at >= ?", start_date)
                         .includes(:tags, :pull_request)
 
       if comments.empty?
@@ -34,10 +34,18 @@ module Ai
       recommendations = @openai.generate_recommendations(pattern_analysis)
 
       # Step 5: Create insight record
+      content = build_insight_content(summary, pattern_analysis, lessons, recommendations)
+
+      # Ensure content is never nil or empty
+      if content.blank?
+        Rails.logger.warn "Generated content is blank, using default"
+        content = "No insights generated for this period."
+      end
+
       insight = AiInsight.create!(
         title: "Code Review Insights - Week of #{Date.today.strftime('%B %d, %Y')}",
         insight_type: "pattern",
-        content: build_insight_content(summary, pattern_analysis, lessons, recommendations),
+        content: content,
         related_comments: comments.pluck(:id),
         confidence_score: 0.85,
         ai_model: "gemini-2.5-flash, gpt-4o-mini"
@@ -76,10 +84,14 @@ module Ai
       pattern_analysis = @gemini.analyze_patterns(comments)
       summary = @openai.generate_insights_summary(comments, time_period: "the last #{days} days")
 
+      # Use tag name directly, capitalize for display
+      tag_display_name = tag.name.titleize
+      content = summary.presence || "No insights generated for this tag."
+
       insight = AiInsight.create!(
-        title: "#{tag.display_name} Insights - #{Date.today.strftime('%B %Y')}",
+        title: "#{tag_display_name} Insights - #{Date.today.strftime('%B %Y')}",
         insight_type: "pattern",
-        content: summary,
+        content: content,
         related_comments: comments.pluck(:id),
         confidence_score: 0.85,
         ai_model: "gemini-2.5-flash, gpt-4o-mini"
@@ -96,7 +108,11 @@ module Ai
     private
 
     def build_insight_content(summary, patterns, lessons, recommendations)
-      content = "# Executive Summary\n\n#{summary}\n\n"
+      content = ""
+
+      if summary.present?
+        content += "# Executive Summary\n\n#{summary}\n\n"
+      end
 
       if patterns[:patterns]&.any?
         content += "## Patterns Identified\n\n"
@@ -113,7 +129,17 @@ module Ai
 
       if recommendations.any?
         content += "## Recommendations\n\n"
-        recommendations.each { |r| content += "- #{r}\n" }
+        recommendations.each do |r|
+          # Handle both hash and string formats
+          if r.is_a?(Hash)
+            text = r[:title] || r["title"] || r.to_s
+            priority = r[:priority] || r["priority"]
+            text = "#{text} (Priority: #{priority})" if priority
+          else
+            text = r.to_s
+          end
+          content += "- #{text}\n"
+        end
       end
 
       content

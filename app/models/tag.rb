@@ -18,5 +18,5 @@ class Tag < ApplicationRecord
     question
   ].freeze
 
-  validates :category, inclusion: { in: CATEGORIES }, allow_nil: true
+  validates :category, inclusion: { in: CATEGORIES }
 end

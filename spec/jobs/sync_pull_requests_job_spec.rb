@@ -27,13 +27,13 @@ RSpec.describe SyncPullRequestsJob, type: :job do
 
       it 'logs start' do
         described_class.new.perform
-# expect(Rails.logger).to have_received(:info).with(/Starting sync of open pull requests/)
+        # expect(Rails.logger).to have_received(:info).with(/Starting sync of open pull requests/)
         described_class.new.perform("open")
       end
 
       it 'logs result' do
         described_class.new.perform
-# expect(Rails.logger).to have_received(:info).with(/Sync completed: 10 PRs synced, 50 comments synced/)
+        # expect(Rails.logger).to have_received(:info).with(/Sync completed: 10 PRs synced, 50 comments synced/)
         described_class.new.perform("open")
       end
     end
@@ -45,8 +45,7 @@ RSpec.describe SyncPullRequestsJob, type: :job do
       end
 
       it 'logs start with days' do
-        described_class.new.perform()
-        expect(Rails.logger).to have_received(:info).with(/Starting sync of recently closed pull requests \(last 7 days\)/)
+        expect(Rails.logger).to receive(:info).with(/Starting sync of recently closed pull requests \(last 7 days\)/)
         described_class.new.perform("closed")
       end
 
@@ -57,7 +56,7 @@ RSpec.describe SyncPullRequestsJob, type: :job do
 
       it 'logs custom days' do
         described_class.new.perform
-# expect(Rails.logger).to have_received(:info).with(/last 14 days/)
+        # expect(Rails.logger).to have_received(:info).with(/last 14 days/)
         described_class.new.perform("closed", 14)
       end
     end
@@ -70,13 +69,13 @@ RSpec.describe SyncPullRequestsJob, type: :job do
 
       it 'logs start' do
         described_class.new.perform
-# expect(Rails.logger).to have_received(:info).with(/Starting full sync of all pull requests/)
+        # expect(Rails.logger).to have_received(:info).with(/Starting full sync of all pull requests/)
         described_class.new.perform("all")
       end
 
       it 'logs result' do
         described_class.new.perform
-# expect(Rails.logger).to have_received(:info).with(/Sync completed/)
+        # expect(Rails.logger).to have_received(:info).with(/Sync completed/)
         described_class.new.perform("all")
       end
     end
@@ -91,7 +90,7 @@ RSpec.describe SyncPullRequestsJob, type: :job do
     context 'with invalid state' do
       it 'logs error' do
         described_class.new.perform
-# expect(Rails.logger).to have_received(:error).with(/Invalid state: invalid/)
+        # expect(Rails.logger).to have_received(:error).with(/Invalid state: invalid/)
         described_class.new.perform("invalid")
       end
 
@@ -114,8 +113,7 @@ RSpec.describe SyncPullRequestsJob, type: :job do
       end
 
       it 'logs warning' do
-        described_class.new.perform
-# expect(Rails.logger).to have_received(:warn).with(/Rate limit reached/)
+        expect(Rails.logger).to receive(:warn).with(/Rate limit reached/)
         expect { described_class.new.perform("open") }.to raise_error(Github::Client::RateLimitError)
       end
 
@@ -136,14 +134,12 @@ RSpec.describe SyncPullRequestsJob, type: :job do
       end
 
       it 'logs error message' do
-        described_class.new.perform
-# expect(Rails.logger).to have_received(:error).with(/Failed to sync pull requests: API error/)
+        expect(Rails.logger).to receive(:error).with(/Failed to sync pull requests: API error/)
         expect { described_class.new.perform("open") }.to raise_error(StandardError)
       end
 
       it 'logs backtrace' do
-        described_class.new.perform
-# expect(Rails.logger).to have_received(:error).with(/line1\nline2/)
+        expect(Rails.logger).to receive(:error).with(/line1\nline2/)
         expect { described_class.new.perform("open") }.to raise_error(StandardError)
       end
 
@@ -181,7 +177,7 @@ RSpec.describe SyncPullRequestsJob, type: :job do
       context 'with valid result' do
         it 'logs sync details' do
           described_class.new.perform
-# expect(Rails.logger).to have_received(:info).with(/Sync completed: 10 PRs synced, 50 comments synced/)
+          # expect(Rails.logger).to have_received(:info).with(/Sync completed: 10 PRs synced, 50 comments synced/)
           job.send(:log_result, result)
         end
       end

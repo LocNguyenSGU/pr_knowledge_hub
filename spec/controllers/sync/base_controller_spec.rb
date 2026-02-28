@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Sync::BaseController, type: :controller do
+  routes { Rails.application.routes }
+
   # Skip authentication for these specs
   before do
     allow(controller).to receive(:authenticate_user!).and_return(true)
@@ -41,11 +43,12 @@ RSpec.describe Sync::BaseController, type: :controller do
 
   describe "POST #comments" do
     context "with pr_number parameter" do
-      let(:pull_request) { create(:pull_request, number: 123) }
-      let(:comment_fetcher) { double(Github::CommentFetcher, fetch: true) }
+      let!(:pull_request) { create(:pull_request, number: 123) }
+      let(:comment_fetcher) { instance_double(Github::CommentFetcher, fetch: []) }
 
       before do
         allow(Github::CommentFetcher).to receive(:new).and_return(comment_fetcher)
+        allow(comment_fetcher).to receive(:fetch).and_return([])
       end
 
       it "syncs comments for specific PR" do
@@ -168,15 +171,17 @@ RSpec.describe Sync::BaseController, type: :controller do
       stub_const('Sidekiq::Stats', Class.new)
       allow(Sidekiq::Stats).to receive(:new).and_return(sidekiq_stats)
 
-      stub_const('Sidekiq::Queue', Class.new)
-      allow(Sidekiq::Queue).to receive(:all).and_return([sidekiq_queue])
+      allow(Sidekiq::Queue).to receive(:all).and_return([ sidekiq_queue ])
+      allow(Sidekiq::Cron::Job).to receive(:all).and_return([ cron_job ])
 
-      stub_const('Sidekiq::Cron::Job', Class.new)
-      allow(Sidekiq::Cron::Job).to receive(:all).and_return([cron_job])
+      # Clear any existing data from other tests
+      PullRequest.delete_all
+      Comment.delete_all
+      AiInsight.delete_all
 
-      create(:pull_request, state: 'open')
-      create(:comment, ai_analyzed: true)
-      create(:ai_insight)
+      @pr = create(:pull_request, state: 'open')
+      @comment = create(:comment, ai_analyzed: true, pull_request: @pr)
+      @insight = create(:ai_insight)
     end
 
     before { get :status, format: :json }
