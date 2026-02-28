@@ -22,7 +22,7 @@ gem "octokit", "~> 8.0"
 gem "faraday-retry", "~> 2.2"
 
 # Background job processing
-gem "sidekiq", "~> 7.0"
+gem "sidekiq", "~> 8.0"
 gem "sidekiq-cron", "~> 1.12"
 gem "connection_pool", "2.5.5"  # Fix for Ruby 3.4 compatibility
 
