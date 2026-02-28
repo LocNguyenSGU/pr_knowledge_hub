@@ -70,7 +70,7 @@ group :development, :test do
   gem "erb_lint", require: false
 
   # Environment variables
-  gem "dotenv-rails", "~> 2.8"
+  gem "dotenv-rails", "~> 3.2"
 
   # Testing framework
   gem "rspec-rails", "~> 6.1"
