@@ -5,6 +5,7 @@ class PullRequest < ApplicationRecord
   validates :github_id, presence: true, uniqueness: true
   validates :number, presence: true
   validates :title, presence: true
+  validates :repository_url, format: { with: %r{\Ahttps://github\.com/.*\z}, message: "must be a valid GitHub URL" }, allow_blank: true
 
   # Scopes
   scope :open, -> { where(state: "open") }

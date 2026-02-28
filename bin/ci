@@ -35,6 +35,12 @@ bundle exec brakeman -q -w3 -z || {
   exit 1
 }
 
+echo "  ✓ Importmap - JavaScript dependencies audit..."
+bin/importmap audit || {
+  echo "⚠️  Warning: JavaScript security vulnerabilities found"
+  # Don't fail CI for JS vulnerabilities, just warn
+}
+
 echo ""
 echo "✅ All linting checks passed!"
 echo ""

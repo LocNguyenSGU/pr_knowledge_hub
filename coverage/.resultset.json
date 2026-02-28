@@ -1,13 +1,13 @@
 {
   "RSpec": {
     "coverage": {
-      "/Users/nguyenhuuloc/Documents/pr_knowledge_hub_implementation/app/helpers/application_helper.rb": {
+      "/Users/nguyenhuuloc/Documents/pr_knowledge_hub/app/helpers/application_helper.rb": {
         "lines": [
           1,
           null
         ]
       },
-      "/Users/nguyenhuuloc/Documents/pr_knowledge_hub_implementation/app/controllers/dashboard_controller.rb": {
+      "/Users/nguyenhuuloc/Documents/pr_knowledge_hub/app/controllers/dashboard_controller.rb": {
         "lines": [
           1,
           1,
@@ -41,7 +41,7 @@
           null
         ]
       },
-      "/Users/nguyenhuuloc/Documents/pr_knowledge_hub_implementation/app/controllers/application_controller.rb": {
+      "/Users/nguyenhuuloc/Documents/pr_knowledge_hub/app/controllers/application_controller.rb": {
         "lines": [
           1,
           null,
@@ -49,7 +49,7 @@
           null
         ]
       },
-      "/Users/nguyenhuuloc/Documents/pr_knowledge_hub_implementation/app/controllers/insights_controller.rb": {
+      "/Users/nguyenhuuloc/Documents/pr_knowledge_hub/app/controllers/insights_controller.rb": {
         "lines": [
           1,
           1,
@@ -89,7 +89,7 @@
           null
         ]
       },
-      "/Users/nguyenhuuloc/Documents/pr_knowledge_hub_implementation/app/controllers/pull_requests_controller.rb": {
+      "/Users/nguyenhuuloc/Documents/pr_knowledge_hub/app/controllers/pull_requests_controller.rb": {
         "lines": [
           1,
           1,
@@ -161,7 +161,7 @@
           null
         ]
       },
-      "/Users/nguyenhuuloc/Documents/pr_knowledge_hub_implementation/app/controllers/search_controller.rb": {
+      "/Users/nguyenhuuloc/Documents/pr_knowledge_hub/app/controllers/search_controller.rb": {
         "lines": [
           1,
           1,
@@ -209,7 +209,7 @@
           null
         ]
       },
-      "/Users/nguyenhuuloc/Documents/pr_knowledge_hub_implementation/app/controllers/sync/base_controller.rb": {
+      "/Users/nguyenhuuloc/Documents/pr_knowledge_hub/app/controllers/sync/base_controller.rb": {
         "lines": [
           1,
           1,
@@ -296,7 +296,7 @@
           null
         ]
       },
-      "/Users/nguyenhuuloc/Documents/pr_knowledge_hub_implementation/app/jobs/analyze_comments_job.rb": {
+      "/Users/nguyenhuuloc/Documents/pr_knowledge_hub/app/jobs/analyze_comments_job.rb": {
         "lines": [
           null,
           null,
@@ -323,7 +323,7 @@
           null
         ]
       },
-      "/Users/nguyenhuuloc/Documents/pr_knowledge_hub_implementation/app/jobs/application_job.rb": {
+      "/Users/nguyenhuuloc/Documents/pr_knowledge_hub/app/jobs/application_job.rb": {
         "lines": [
           null,
           1,
@@ -341,7 +341,7 @@
           null
         ]
       },
-      "/Users/nguyenhuuloc/Documents/pr_knowledge_hub_implementation/app/services/github/client.rb": {
+      "/Users/nguyenhuuloc/Documents/pr_knowledge_hub/app/services/github/client.rb": {
         "lines": [
           1,
           1,
@@ -429,7 +429,7 @@
           null
         ]
       },
-      "/Users/nguyenhuuloc/Documents/pr_knowledge_hub_implementation/app/jobs/generate_insights_job.rb": {
+      "/Users/nguyenhuuloc/Documents/pr_knowledge_hub/app/jobs/generate_insights_job.rb": {
         "lines": [
           null,
           null,
@@ -451,7 +451,7 @@
           null
         ]
       },
-      "/Users/nguyenhuuloc/Documents/pr_knowledge_hub_implementation/app/jobs/sync_pull_requests_job.rb": {
+      "/Users/nguyenhuuloc/Documents/pr_knowledge_hub/app/jobs/sync_pull_requests_job.rb": {
         "lines": [
           null,
           null,
@@ -503,7 +503,7 @@
           null
         ]
       },
-      "/Users/nguyenhuuloc/Documents/pr_knowledge_hub_implementation/app/models/ai_insight.rb": {
+      "/Users/nguyenhuuloc/Documents/pr_knowledge_hub/app/models/ai_insight.rb": {
         "lines": [
           1,
           null,
@@ -525,14 +525,14 @@
           null
         ]
       },
-      "/Users/nguyenhuuloc/Documents/pr_knowledge_hub_implementation/app/models/application_record.rb": {
+      "/Users/nguyenhuuloc/Documents/pr_knowledge_hub/app/models/application_record.rb": {
         "lines": [
           1,
           1,
           null
         ]
       },
-      "/Users/nguyenhuuloc/Documents/pr_knowledge_hub_implementation/app/models/comment.rb": {
+      "/Users/nguyenhuuloc/Documents/pr_knowledge_hub/app/models/comment.rb": {
         "lines": [
           1,
           1,
@@ -563,7 +563,7 @@
           null
         ]
       },
-      "/Users/nguyenhuuloc/Documents/pr_knowledge_hub_implementation/app/models/comment_tag.rb": {
+      "/Users/nguyenhuuloc/Documents/pr_knowledge_hub/app/models/comment_tag.rb": {
         "lines": [
           1,
           1,
@@ -573,12 +573,13 @@
           null
         ]
       },
-      "/Users/nguyenhuuloc/Documents/pr_knowledge_hub_implementation/app/models/pull_request.rb": {
+      "/Users/nguyenhuuloc/Documents/pr_knowledge_hub/app/models/pull_request.rb": {
         "lines": [
           1,
           1,
           null,
           null,
+          1,
           1,
           1,
           1,
@@ -604,7 +605,7 @@
           null
         ]
       },
-      "/Users/nguyenhuuloc/Documents/pr_knowledge_hub_implementation/app/models/tag.rb": {
+      "/Users/nguyenhuuloc/Documents/pr_knowledge_hub/app/models/tag.rb": {
         "lines": [
           1,
           1,
@@ -630,7 +631,7 @@
           null
         ]
       },
-      "/Users/nguyenhuuloc/Documents/pr_knowledge_hub_implementation/app/models/user.rb": {
+      "/Users/nguyenhuuloc/Documents/pr_knowledge_hub/app/models/user.rb": {
         "lines": [
           1,
           null,
@@ -640,7 +641,7 @@
           null
         ]
       },
-      "/Users/nguyenhuuloc/Documents/pr_knowledge_hub_implementation/app/services/ai/comment_classifier.rb": {
+      "/Users/nguyenhuuloc/Documents/pr_knowledge_hub/app/services/ai/comment_classifier.rb": {
         "lines": [
           1,
           null,
@@ -731,7 +732,7 @@
           null
         ]
       },
-      "/Users/nguyenhuuloc/Documents/pr_knowledge_hub_implementation/app/services/ai/gemini_client.rb": {
+      "/Users/nguyenhuuloc/Documents/pr_knowledge_hub/app/services/ai/gemini_client.rb": {
         "lines": [
           1,
           null,
@@ -893,7 +894,7 @@
           null
         ]
       },
-      "/Users/nguyenhuuloc/Documents/pr_knowledge_hub_implementation/app/services/ai/insight_generator.rb": {
+      "/Users/nguyenhuuloc/Documents/pr_knowledge_hub/app/services/ai/insight_generator.rb": {
         "lines": [
           1,
           null,
@@ -1057,7 +1058,7 @@
           null
         ]
       },
-      "/Users/nguyenhuuloc/Documents/pr_knowledge_hub_implementation/app/services/ai/openai_client.rb": {
+      "/Users/nguyenhuuloc/Documents/pr_knowledge_hub/app/services/ai/openai_client.rb": {
         "lines": [
           1,
           null,
@@ -1253,7 +1254,7 @@
           null
         ]
       },
-      "/Users/nguyenhuuloc/Documents/pr_knowledge_hub_implementation/app/services/github/comment_fetcher.rb": {
+      "/Users/nguyenhuuloc/Documents/pr_knowledge_hub/app/services/github/comment_fetcher.rb": {
         "lines": [
           1,
           1,
@@ -1351,7 +1352,7 @@
           null
         ]
       },
-      "/Users/nguyenhuuloc/Documents/pr_knowledge_hub_implementation/app/services/github/pull_request_fetcher.rb": {
+      "/Users/nguyenhuuloc/Documents/pr_knowledge_hub/app/services/github/pull_request_fetcher.rb": {
         "lines": [
           1,
           1,
@@ -1423,7 +1424,7 @@
           null
         ]
       },
-      "/Users/nguyenhuuloc/Documents/pr_knowledge_hub_implementation/app/services/github/sync_service.rb": {
+      "/Users/nguyenhuuloc/Documents/pr_knowledge_hub/app/services/github/sync_service.rb": {
         "lines": [
           1,
           1,
@@ -1556,6 +1557,6 @@
         ]
       }
     },
-    "timestamp": 1772291458
+    "timestamp": 1772293260
   }
 }

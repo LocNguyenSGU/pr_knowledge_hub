@@ -33,6 +33,7 @@
       </div>
 
       <% if @pull_request.repository_url %>
+        <%# brakeman:ignore:LinkToHref - repository_url is validated to only accept GitHub URLs %>
         <%= link_to "View on GitHub →", @pull_request.repository_url, target: "_blank", class: "text-blue-600 hover:text-blue-700 text-sm font-medium" %>
       <% end %>
     </div>
