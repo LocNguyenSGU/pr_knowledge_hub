@@ -25,7 +25,7 @@ if Rails.env.development?
       user.save!
     end
   end
-  
+
   puts "✓ Created #{User.count} users total"
 end
 
