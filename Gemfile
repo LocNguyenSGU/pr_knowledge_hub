@@ -23,7 +23,7 @@ gem "faraday-retry", "~> 2.2"
 
 # Background job processing
 gem "sidekiq", "~> 7.0"
-gem "sidekiq-cron", "~> 1.12"
+gem "sidekiq-cron", "~> 2.3"
 gem "connection_pool", "2.5.5"  # Fix for Ruby 3.4 compatibility
 
 # Full-text search
