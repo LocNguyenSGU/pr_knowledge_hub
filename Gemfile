@@ -18,7 +18,7 @@ gem "stimulus-rails"
 gem "tailwindcss-rails"
 
 # GitHub API client
-gem "octokit", "~> 8.0"
+gem "octokit", "~> 10.0"
 gem "faraday-retry", "~> 2.2"
 
 # Background job processing
