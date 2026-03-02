@@ -97,7 +97,7 @@ group :test do
   gem "simplecov-console", require: false
 
   # Model testing matchers
-  gem "shoulda-matchers", "~> 6.0"
+  gem "shoulda-matchers", "~> 7.0"
 
   # Controller testing helpers
   gem "rails-controller-testing"
