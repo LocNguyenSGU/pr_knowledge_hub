@@ -30,7 +30,7 @@ gem "connection_pool", "2.5.5"  # Fix for Ruby 3.4 compatibility
 gem "pg_search", "~> 2.3"
 
 # AI APIs
-gem "ruby-openai", "~> 6.0"
+gem "ruby-openai", "~> 8.3"
 gem "gemini-ai", "~> 4.0"
 
 # Authentication
